@@ -104,7 +104,7 @@ Base_angle = avg_wind_direction;
 % método estatístico de monte carlo para introduzir aleatoriedade em alguns
 % parâmetros aerodinâmicos do foguete.
 
-iterations = 20; % número de lançamentos simulados
+iterations = 100; % número de lançamentos simulados
 [Ascbig,Desbig,Landing,Apogee] = rocketflight_monte(INTAB, ...
                                                     INTAB4,...
                                                     Parachute_altitude_action, ...
@@ -130,7 +130,32 @@ iterations = 20; % número de lançamentos simulados
                                 Base_angle); 
                             
 
+% Relendo dados do voo salvo pela função flight_variables                            
+flight01_data = readtable('FlightData01.csv');
 
+time = table2array(flight01_data(:,{'Time_s_'}));
+vx = table2array(flight01_data(:,{'VelocityVx_m_s_'}));
+vy = table2array(flight01_data(:,{'VelocityVy_m_s_'}));
+vz = table2array(flight01_data(:,{'VelocityVz_m_s_'}));
+ax = table2array(flight01_data(:,{'AccelerationAx_m_s2_'}));
+ay = table2array(flight01_data(:,{'AccelerationAy_m_s2_'}));
+az = table2array(flight01_data(:,{'AccelerationAz_m_s2_'}));
+fx = table2array(flight01_data(:,{'ForceX_N_'}));
+fy = table2array(flight01_data(:,{'ForceY_N_'}));
+fz = table2array(flight01_data(:,{'ForceZ_N_'}));
+v_mag = sqrt(vx.*vx + vy.*vy + vz.*vz);
+a_mag = sqrt(ax.*ax + ay.*ay + az.*az);
+f_mag = sqrt(fx.*fx + fy.*fy + fz.*fz);
+figure(6);
+plot(time, v_mag, '-k')
+hold on
+grid on
+plot(time, a_mag, '-b')
+plot(time, f_mag, '-r')
+xlabel('Time (s)')
+lg = legend('v_{mag} (m/s)','a_{mag} (m/s2)','f_{mag} (N)');
+lg.FontSize = 14;
+                            
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                         COMENTÁRIOS ADICIONAIS                          %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
