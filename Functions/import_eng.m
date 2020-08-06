@@ -1,4 +1,4 @@
-function [motor,I,description] = import_eng(filename)
+function [motor,I,description] = import_eng(filename,X)
 
 f = fopen(filename,'r');
 
@@ -46,7 +46,7 @@ name = metadata(1:idx(1)-1);
 diameter = str2double(metadata(idx(1)+1:idx(2)-1))/1000;
 len = str2double(metadata(idx(2)+1:idx(3)-1))/1000;
 fuel_mass = str2double(metadata(idx(4)+1:idx(5)-1));
-engine_mass = str2double(metadata(idx(5)+1:idx(6)-1));
+engine_mass = str2double(metadata(idx(5)+1:idx(6)-1))-fuel_mass;
 manufacturer = metadata(idx(6)+1:end);
 
 motor_name = [manufacturer '_' name];
@@ -55,6 +55,6 @@ motor_name = [manufacturer '_' name];
 
 thrustTable = [table M'+engine_mass];
 
-motor = {'motor',motor_name,thrustTable,len,diameter,0};
+motor = {'motor',motor_name,thrustTable,len,diameter,X};
 disp(['Motor ' motor_name ' with total impulse of ' num2str(I) 'Ns was imported'])
 end

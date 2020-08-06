@@ -1,5 +1,6 @@
 %% Preâmbulo
 % Limpando variáveis antigas e adicionando funções customizadas
+close all
 clear all
 clc
 
@@ -12,47 +13,56 @@ addpath('Functions')
 % ex.: descrição do foguete BRAVA A-22 
 
 % Nariz
-nosecone = {'nose','von karman',0.24,0.075,0.140,0};
-nose_coupler = {'cylinder','no',0.025,0.068,0.054,0.24};
+nosecone = {'nose','von karman',0.228,0.0792,0.100,0};
+nose_coupler = {'cylinder','no',0.085,0.0752,0.311,0.228};
 
 % Seção da Eletrônica
-top_airframe = {'tube','yes',0.275,0.071,0.075,0.294,nosecone{3}};
-eletronics_ring = {'cylinder','no',0.02,0.0069,0.028,0.446};
-eletronics = {'tube','no',0.2,0.038,0.039,0.205,0.266};
-parachute_upper_ring = {'cylinder','no',0.068,0.059,0.213,0.49};
-threaded_bar1 = {'pm',0.036,0.09,0.49+0.48/2};
-threaded_bar2 = {'pm',0.036,-0.09,0.49+0.48/2};
-
+top_airframe = {'tube','yes',0.172,0.0752,0.0792,0.103,nosecone{3}};
+eletronics_ring = {'cylinder','no',0.025,0.0069,0.134,0.453};
+eletronics = {'tube','no',0.15,0.019,0.018,0.300,0.308};
+canard_trans={'cone_trans','yes',0.0792,0.0832,0.0832,0.005,0.005,0.4};
+top_airframe2= {'tube','yes',0.05,0.0792,0.0832,0.0472,0.405};
+canard={'finset',4,0.06,0.02,0.09,0.08,0.005,0.117,0.0832,0.0832,0.4};
+canard_trans2={'cone_trans','yes',0.0832,0.0792,0.0832,0.005,0.005,0.455};
+top_airframe3={'tube','yes',0.045,0.0752,0.0792,0.0271,0.46};
 
 % Seção do Paraquedas
-mid_airframe = {'tube','yes',0.68,0.071,0.075,0.764,top_airframe{3}+top_airframe{7}};
-parachute = {'parachute',0.8,pi*0.3^2/4,0.265,0.56+0.22};
-parachute_lower_ring = {'cylinder','no',0.03,0.069,0.033,1.01};
-launch_lug = {'pm',0.013,0.075,1.01};
-threaded_bar3 = {'pm',0.04,0.09,1.04+0.347/2};
-threaded_bar4 = {'pm',0.04,-0.09,1.04+0.347/2};
-fin_upper_support = {'cylinder','no',0.06,0.069,0.114,1.04};
+mid_airframe = {'tube','yes',0.51,0.0752,0.0792,0.307,0.505};
+parachute_eltronics = {'cylinder','no',0.11,0.0752,0.316,0.478};
+parachute = {'parachute',0.8,pi*0.3^2/4,0.100,0.669+0.125};
+parachute_reinforce = {'tube','no',0.29,0.068,0.069,0.223,0.648};
+piston = {'pm',0.050,0.025,0.601};%mass/radial/long
+battery = {'pm',0.1,0.015,0.666};
+battery2 = {'pm',0.1,0.015,0.858};
+piston2 = {'pm',0.050,0.025,0.95};
+%launch_lug = {'pm',0.013,0.075,1.01};
 
 % Seção do Motor (+ Aletas)
-bottom_airframe = {'tube','yes',0.18,0.071,0.075,0.09,mid_airframe{3}+mid_airframe{7}};
-fin_bottom_support = {'cylinder','no',0.06,0.072,0.101,1.31};
-fins = {'finset',3,0.115,0.03,0.13,0.115,0.003,0.301,0.075,0.075,1.19};
+bottom_airframe = {'tube','yes',0.664,0.0752,0.0792,0.399,1.015};
+motor_parachute = {'cylinder','no',0.11,0.0752,0.316,0.988};
+fin_trans = {'cone_trans','yes',0.0792,0.0832,0.0832,0.01,0.01,1.68};
+fin_support = {'tube','yes',0.18,0.0792,0.0832,0.17,1.69};
+fins = {'finset',4,0.18,0.04,0.19,0.15,0.005,0.604,0.0832,0.0832,1.689};
 
 % Motor
-motor_bulkhead = {'cylinder','no',0.022,0.048,0.27,1.07};
-motor_nozzle = {'cylinder','no',0.085,0.037,0.396,1.31};
-motor = import_eng('Motor-A-Nakka.eng');
+motor_nozzle = {'cylinder','no',0.0115,0.069,0.719,1.82};
+motor_bulkhead = {'cylinder','no',0.045,0.069,0.329,1.28};
+motor =import_eng('Nakka_B.eng',1.27);
+iso_foam= {'cylinder','no',0.02,0.069,0.010,1.25};
+ballast= {'cylinder','no',0.15,0.069,0,1.10};
+boattail= {'cone_trans','yes',0.0832,0.065,0.0832,0.06,0.1,1.859};
 
 % INTAB junta todos os componentes e cria o foguete. Todos os
 % componentes criados na seção anterior devem ser passados como input para
 % a função intab_builder.
 INTAB = intab_builder(nosecone,nose_coupler,...
-                      top_airframe,eletronics_ring,eletronics,...
-                      parachute_upper_ring,threaded_bar1,threaded_bar2,...
-                      mid_airframe,parachute,parachute_lower_ring,...
-                      launch_lug,threaded_bar3,threaded_bar4,...
-                      fin_upper_support,bottom_airframe,fin_bottom_support,fins,...
-                      motor_bulkhead,motor_nozzle,motor);
+                      top_airframe, eletronics, eletronics_ring,...
+                      top_airframe2, canard_trans, canard, canard_trans2,top_airframe3,...
+                      mid_airframe,parachute_eltronics,parachute,...
+                      parachute_reinforce, piston, battery, battery2,piston2,...
+                      bottom_airframe, motor_parachute,motor,...
+                      fin_trans,fin_support,fins,boattail,...
+                      motor_bulkhead,motor_nozzle,iso_foam,ballast);
 
 %% ATMOSFERA
 % Define propriedades atmosféricas (retiradas do INMET)
@@ -64,8 +74,8 @@ INTAB = intab_builder(nosecone,nose_coupler,...
 % Dados do site do INMET (médias para os dados da janela de voo)
  avg_wind_direction = 60; 
  avg_temperature =  10;
- avg_windspeed = 2; 
- avg_windshear = 10;
+ avg_windspeed = 1; 
+ avg_windshear = 5;
 
 % Parâmetros de referência
  height = 2; 
@@ -104,14 +114,21 @@ Base_angle = avg_wind_direction;
 % método estatístico de monte carlo para introduzir aleatoriedade em alguns
 % parâmetros aerodinâmicos do foguete.
 
-iterations = 100; % número de lançamentos simulados
-[Ascbig,Desbig,Landing,Apogee] = rocketflight_monte(INTAB, ...
-                                                    INTAB4,...
-                                                    Parachute_altitude_action, ...
-                                                    Base_length, ...
-                                                    Base_declination, ...
-                                                    Base_angle, ...
-                                                    iterations);
+iterations = 20; % número de lançamentos simulados
+[Ascbig,Desbig,Landing,Apogee] = rocketflight(INTAB, ...
+                                                   INTAB4,...
+                                                   Parachute_altitude_action, ...
+                                                   Base_length, ...
+                                                   Base_declination, ...
+                                                   Base_angle);
+
+% [Ascbig,Desbig,Landing,Apogee] = rocketflight_monte(INTAB, ...
+%                                                     INTAB4,...
+%                                                     Parachute_altitude_action, ...
+%                                                     Base_length, ...
+%                                                     Base_declination, ...
+%                                                     Base_angle, ...
+%                                                     iterations);
 
 
 %% Pós-Processamento
@@ -157,7 +174,7 @@ lg = legend('v_{mag} (m/s)','a_{mag} (m/s2)','f_{mag} (N)');
 lg.FontSize = 14;
                             
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                         COMENTÁRIOS ADICIONAIS                          %
+%                         COMENT�?RIOS ADICIONAIS                          %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Building your rocket %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -168,12 +185,12 @@ lg.FontSize = 14;
     %% Motor
         % Motor = {'motor', 'Name', Ttable, length, diameter, position}
         % Ttable = {time,thrust,mass}
-        % 'position' should be 0 when developing a new motor, as it will be
-        % replaced on the intab_builder function. It represents the distance
-        % between the foremost point of the rocket and the motor position.
         % import_eng is a custom script that imports data from a .eng file 
         % to the motor variable. The .eng motor file should be contained in
-        % the same directory from which the simulation is being run.
+        % the same directory from which the simulation is being run and wiithin this
+        % function the user must specify the position of said motor within
+        % the rocket having the foremost part of the rocket as a reference
+        % point.
 
     %% Nose cone
         % Nose = {'nose', type, length, diameter, mass, position}
